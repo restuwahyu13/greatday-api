@@ -1,0 +1,5 @@
+node_modules
+dists
+.env
+.DS_Store
+images

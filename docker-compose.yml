@@ -1,0 +1,57 @@
+version: '3'
+services:
+  #####################################
+  # APPLICATION APP SERVICE ENVIRONMENT
+  #####################################
+  app:
+    build: .
+    restart: always
+    healthcheck:
+      start_period: 60s
+      timeout: 120s
+      interval: 30s
+      test: echo ${USER}
+    ports:
+      - 3000:3000
+    env_file: .env
+    depends_on:
+      - database
+    volumes:
+      - ./:/usr/share/app
+      - /usr/share/app/node_modules
+    networks:
+      - node_networks
+  ##############################
+  # DATABASE SERVICE ENVIRONMENT
+  ##############################
+  database:
+    image: mysql:8.0.30-debian
+    restart: always
+    healthcheck:
+      start_period: 60s
+      timeout: 120s
+      interval: 30s
+      test: echo ${USER}
+    env_file: .env
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DBNAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - database:/var/lib/mysql
+    networks:
+      - node_networks
+# #############################
+# # VOLUME PERSISTENT DATA
+# #############################
+volumes:
+  database:
+    #############################
+    # NETWORKS SHARING GROUP
+    #############################
+networks:
+  node_networks:
