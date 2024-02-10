@@ -30,9 +30,9 @@ export class Metadata {
 	static readonly version: string = !Metadata.isDesktop ? 'app' : 'website'
 
 	static readonly deviceInfo: DeviceInfo = {
-		model: !Metadata.isDesktop ? Metadata.deviceDetector.device.model : navigatorPlatform(),
-		platform: !Metadata.isDesktop ? Metadata.deviceDetector.os.platform : navigatorPlatform(),
-		version: !Metadata.isDesktop ? Metadata.deviceDetector.os.version : Metadata.deviceDetector.os.version,
+		model: !Metadata.isDesktop ? Metadata.deviceDetector.os.platform : Metadata.deviceDetector.client.name,
+		platform: !Metadata.isDesktop ? Metadata.deviceDetector.os.name : Metadata.deviceDetector.client.name,
+		version: !Metadata.isDesktop ? Metadata.deviceDetector.os.version : Metadata.deviceDetector.client.version,
 		deviceId: !Metadata.isDesktop ? randomDeviceId() : '',
 		imei: !Metadata.isDesktop ? randomIMEI() : ''
 	}

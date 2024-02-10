@@ -34,7 +34,7 @@ export const apiResponse = (configs: ApiResponse): ApiResponse => {
   `)
 		configs.err_message = STATUS_CODES[status.INTERNAL_SERVER_ERROR]
 	} else if (Object.prototype.isPrototypeOf(configs.err_message) && configs.err_message.hasOwnProperty('err_message')) {
-		const exception: Error = new Error(configs.err_message.error_message)
+		const exception: Error = new Error(configs.err_message['err_message'])
 		consola.error(`
 ==================================
 ======== Error Exception 2 =========

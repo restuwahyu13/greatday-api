@@ -26,7 +26,7 @@ export class AuthorizationMiddleware {
 
 			let authToken: string = headers.authorization.split('Bearer ')[1]
 			if (!validator.isJWT(authToken)) {
-				throw apiResponse({ stat_code: status.UNAUTHORIZED, err_message: 'Authorization required' })
+				throw apiResponse({ stat_code: status.UNAUTHORIZED, err_message: 'Invalid token' })
 			}
 
 			authToken = authToken.trim()

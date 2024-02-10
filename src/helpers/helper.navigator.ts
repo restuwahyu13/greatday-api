@@ -11,7 +11,7 @@ export enum ENavigatorPlatfrom {
 }
 
 export const navigatorPlatform = (): string => {
-	let platform: string = deviceDetector().device.type
+	let platform: string = deviceDetector().os.name
 	const isDesktop: boolean = DeviceHelper.isDesktop(deviceDetector())
 
 	const userAgent: UserAgent = ConfigsEnvironment.USER_AGENT

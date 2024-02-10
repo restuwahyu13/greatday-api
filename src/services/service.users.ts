@@ -1,7 +1,7 @@
 import { StatusCodes as status } from 'http-status-codes'
 import FormDataNode from 'form-data'
 import { promisify } from 'util'
-import { unlink } from 'fs'
+import { existsSync, unlink } from 'fs'
 
 import { Inject, Service } from '~/helpers/helper.di'
 import { apiResponse, ApiResponse } from '~/helpers/helper.apiResponse'
@@ -48,6 +48,7 @@ export class UsersService {
 					fullName: user.fullName,
 					email: user.email,
 					position: user.position,
+					ttl: user.ttl,
 					companyId: user.companyId,
 					companyCode: user.companyCode,
 					companyName: user.company.companyName
@@ -64,7 +65,7 @@ export class UsersService {
 		}
 	}
 
-	async usersProfile(): Promise<any> {
+	async usersProfile(): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
 			const userProfile: Record<string, any> = await this.greatDayProvider.profile(this.axiosLibs, user)
@@ -75,13 +76,13 @@ export class UsersService {
 		}
 	}
 
-	async usersSetLocation(body: UsersSetLocationDTO): Promise<any> {
+	async usersSetLocation(body: UsersSetLocationDTO): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
 			const checkLocaion: Record<string, any> = await this.greatDayProvider.checkLocation(this.axiosLibs, user, body)
 
 			if (checkLocaion) {
-				await this.redisLibs.hsetEx(`${user.id}:location`, 'users', user.ttl, body)
+				await this.redisLibs.hsetEx(`${user.userId}:location`, 'users', user.ttl, body)
 			}
 
 			return apiResponse({ stat_code: status.OK, stat_message: 'Success', data: checkLocaion })
@@ -98,20 +99,20 @@ export class UsersService {
 			const uploadAttendancePhoto: Record<string, any> = await this.greatDayProvider.uploadAttendancePhoto(this.axiosLibs, form, user)
 
 			if (uploadAttendancePhoto) {
-				await this.redisLibs.set(`${user.id}:filename`, uploadAttendancePhoto.filename)
+				await this.redisLibs.setEx(`${user.userId}:filename`, user.ttl, uploadAttendancePhoto.fileName)
 			}
 
-			return apiResponse({ stat_code: 200, stat_message: 'Success', data: uploadAttendancePhoto.data })
+			return apiResponse({ stat_code: 200, stat_message: 'Success', data: uploadAttendancePhoto })
 		} catch (e: any) {
 			throw apiResponse({ err_message: e })
 		}
 	}
 
-	async usersRecordAttendance(): Promise<any> {
+	async usersRecordAttendance(): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
-			const fileName: string = await this.redisLibs.get(`${user.id}:filename`)
-			const location: ISetLocation = await this.redisLibs.hget(`${user.id}:location`, 'users')
+			const fileName: string = await this.redisLibs.get(`${user.userId}:filename`)
+			const location: ISetLocation = await this.redisLibs.hget(`${user.userId}:location`, 'users')
 
 			if (!fileName && !location) {
 				throw apiResponse({ stat_code: status.PRECONDITION_REQUIRED, err_message: 'Filename and location required' })
@@ -120,8 +121,12 @@ export class UsersService {
 			const recordAttendance: Record<string, any> = await this.greatDayProvider.recordAttendance(this.axiosLibs, user, location, fileName)
 
 			if (recordAttendance) {
-				const unlinkAsync = promisify(unlink)
-				await unlinkAsync(resolve(ConfigsEnvironment.STORAGE_DIR, fileName))
+				const dir: string = resolve(ConfigsEnvironment.STORAGE_DIR, fileName.split('-')[4])
+
+				if (existsSync(dir)) {
+					const unlinkAsync = promisify(unlink)
+					await unlinkAsync(dir)
+				}
 			}
 
 			return apiResponse({ stat_code: status.OK, stat_message: 'Success', data: recordAttendance })

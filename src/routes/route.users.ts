@@ -33,12 +33,12 @@ export class UsersRoute {
 			[this.authMiddleware.use, this.validatorMiddleware.use(UsersSetLocationDTO)],
 			this.usersController.usersSetLocation()
 		)
-		this.router.post('/record-attendance', [this.authMiddleware.use], this.usersController.usersRecordAttendance())
 		this.router.post(
 			'/upload-attendance',
 			[this.authMiddleware.use, this.filesMiddleware.use(this.multerLibs.file, 'file')],
 			this.usersController.usersUploadAttendancePhoto()
 		)
+		this.router.post('/record-attendance', [this.authMiddleware.use], this.usersController.usersRecordAttendance())
 
 		return this.router
 	}
