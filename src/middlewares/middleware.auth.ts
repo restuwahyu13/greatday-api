@@ -46,7 +46,7 @@ export class AuthorizationMiddleware {
 
 			next()
 		} catch (e: any) {
-			return res.status(e.stat_code).json(e)
+			return res.status(e.stat_code ?? status.INTERNAL_SERVER_ERROR).json(apiResponse({ err_message: e }))
 		}
 	}
 }
