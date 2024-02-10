@@ -145,8 +145,8 @@ export function randomDomainName(): string {
 		domain += chars[Math.floor(Math.random() * chars.length)]
 	}
 
-	const domainLengths: number[] = [1, 2, 3, 4, 5, 6, 7]
-	const domains: string[] = ['.com', '.xyz', '.id', '.tech', 'co', '.biz', '.edu']
+	const domainLengths: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+	const domains: string[] = ['.com', '.xyz', '.id', '.tech', '.co', '.biz', '.edu', '.inc', '.ltd', '.org', '.cc', '.info']
 	domain += domains[randomNextNumber(domainLengths)]
 
 	return domain
