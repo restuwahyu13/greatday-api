@@ -5,7 +5,7 @@ import { existsSync, unlink } from 'fs'
 
 import { Inject, Service } from '~/helpers/helper.di'
 import { apiResponse, ApiResponse } from '~/helpers/helper.apiResponse'
-import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
+import { UsersLoginDTO, UsersRecordAttendanceDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
 import { Axios } from '~/libs/lib.axios'
 import { JsonWebToken } from '~/libs/lib.jwt'
 import { Redis } from '~/libs/lib.redis'
@@ -108,7 +108,7 @@ export class UsersService {
 		}
 	}
 
-	async usersRecordAttendance(): Promise<ApiResponse> {
+	async usersRecordAttendance(body: UsersRecordAttendanceDTO): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
 			const fileName: string = await this.redisLibs.get(`${user.userId}:filename`)
@@ -116,6 +116,10 @@ export class UsersService {
 
 			if (!fileName && !location) {
 				throw apiResponse({ stat_code: status.PRECONDITION_REQUIRED, err_message: 'Filename and location required' })
+			}
+
+			if (body.filename !== fileName) {
+				throw apiResponse({ stat_code: status.NOT_ACCEPTABLE, err_message: 'Invalid filename' })
 			}
 
 			const recordAttendance: Record<string, any> = await this.greatDayProvider.recordAttendance(this.axiosLibs, user, location, fileName)

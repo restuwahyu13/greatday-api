@@ -1,6 +1,6 @@
 import { Inject, Route, Router } from '~/helpers/helper.di'
 import { UsersController } from '~/controllers/controller.users'
-import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
+import { UsersLoginDTO, UsersRecordAttendanceDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
 import { ValidatorMiddleware } from '~/middlewares/middleware.validator'
 import { AuthorizationMiddleware } from '~/middlewares/middleware.auth'
 import { FilesMiddleware } from '~/middlewares/middleware.upload'
@@ -38,7 +38,11 @@ export class UsersRoute {
 			[this.authMiddleware.use, this.filesMiddleware.use(this.multerLibs.file, 'file')],
 			this.usersController.usersUploadAttendancePhoto()
 		)
-		this.router.post('/record-attendance', [this.authMiddleware.use], this.usersController.usersRecordAttendance())
+		this.router.post(
+			'/record-attendance',
+			[this.authMiddleware.use, this.validatorMiddleware.use(UsersRecordAttendanceDTO)],
+			this.usersController.usersRecordAttendance()
+		)
 
 		return this.router
 	}

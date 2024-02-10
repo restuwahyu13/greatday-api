@@ -5,7 +5,7 @@ import { UsersService } from '~/services/service.users'
 import { Controller, Inject } from '~/helpers/helper.di'
 import { ApiResponse } from '~/helpers/helper.apiResponse'
 import { rawParser } from '~/helpers/helper.rawParser'
-import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
+import { UsersLoginDTO, UsersRecordAttendanceDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
 
 @Controller()
 export class UsersController {
@@ -59,9 +59,9 @@ export class UsersController {
 	}
 
 	usersRecordAttendance(): Handler {
-		return async (_req: Request, res: Response, _next: NextFunction): Promise<OutgoingMessage> => {
+		return async (req: Request, res: Response, _next: NextFunction): Promise<OutgoingMessage> => {
 			try {
-				const users: ApiResponse = await this.usersService.usersRecordAttendance()
+				const users: ApiResponse = await this.usersService.usersRecordAttendance(rawParser<UsersRecordAttendanceDTO>(req.body))
 				return res.status(users.stat_code).json(users)
 			} catch (e: any) {
 				return res.status(e.stat_code).json(e)
