@@ -14,6 +14,7 @@ import hpp from 'hpp'
 import consola from 'consola'
 
 import { apiResponse } from '~/helpers/helper.apiResponse'
+import { ip } from '~/middlewares/middleware.ip'
 import { Container, Injectable } from '~/helpers/helper.di'
 import { AppModule } from '~/app.module'
 
@@ -37,6 +38,7 @@ class App {
 	}
 
 	private middleware(): void {
+		this.app.use(ip())
 		this.app.use(bodyParser.json({ limit: '1mb' }))
 		this.app.use(bodyParser.raw({ inflate: true, limit: '1mb', type: 'application/json' }))
 		this.app.use(bodyParser.urlencoded({ extended: true }))

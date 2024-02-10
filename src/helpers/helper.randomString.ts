@@ -86,3 +86,68 @@ export const randomNamefile = (): string => {
 
 	return `img_web_${userId}_${year}${month}${day}_1707${hour}${minute}${second}${milliseconds}.jpg`
 }
+
+function randomIntForIP(min: number, max: number) {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function randomNextNumber(numbs: number[]): number {
+	const max: number = Math.max(...numbs)
+	const min: number = Math.min(...numbs)
+	const nextNumber: number = Math.floor(Math.random() * (max - min + 1))
+
+	return nextNumber
+}
+
+export function randomIpAddress(): string {
+	const ipLengths: number[] = [1, 2, 3]
+	const ipTypes: string[] = ['A', 'B', 'C']
+	let ip: string = ''
+
+	switch (ipTypes[randomNextNumber(ipLengths)]) {
+		case 'A':
+			ip += randomIntForIP(1, 126)
+			for (let i = 0; i < 3; i++) {
+				ip += '.' + randomIntForIP(0, 255)
+			}
+			break
+
+		case 'B':
+			ip += randomIntForIP(128, 191)
+			ip += '.' + randomIntForIP(0, 255)
+			for (let i = 0; i < 2; i++) {
+				ip += '.' + randomIntForIP(0, 255)
+			}
+			break
+
+		case 'C':
+			ip += randomIntForIP(192, 223)
+			for (let i = 0; i < 2; i++) {
+				ip += '.' + randomIntForIP(0, 255)
+			}
+			ip += '.' + randomIntForIP(0, 254)
+			break
+
+		default:
+			return
+	}
+
+	return ip
+}
+
+export function randomDomainName(): string {
+	const chars: string = 'abcdefghijklmnopqrstuvwxyz0123456789'
+	let domain: string = ''
+
+	for (let i = 0; i < 10; i++) {
+		domain += chars[Math.floor(Math.random() * chars.length)]
+	}
+
+	const domainLengths: number[] = [1, 2, 3, 4, 5, 6, 7]
+	const domains: string[] = ['.com', '.xyz', '.id', '.tech', 'co', '.biz', '.edu']
+	domain += domains[randomNextNumber(domainLengths)]
+
+	return domain
+}

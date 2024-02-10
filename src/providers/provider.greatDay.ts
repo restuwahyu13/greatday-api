@@ -6,7 +6,7 @@ import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
 import { apiResponse } from '~/helpers/helper.apiResponse'
 import { Injectable } from '~/helpers/helper.di'
 import { Metadata } from '~/helpers/helper.metadata'
-import { randomXGDParams } from '~/helpers/helper.randomString'
+import { randomIpAddress, randomXGDParams } from '~/helpers/helper.randomString'
 import { Axios, EAxiosHttpMethod } from '~/libs/lib.axios'
 
 interface ISearchCompany {
@@ -53,6 +53,8 @@ export interface ISetLocation {
 
 @Injectable()
 export class GreatDayProvider {
+	ip: string = randomIpAddress()
+
 	private async seachCompany(axios: Axios, companyName: string): Promise<ISearchCompany> {
 		try {
 			const company: Record<string, any> = await axios.request({
@@ -77,7 +79,9 @@ export class GreatDayProvider {
 						'Key': '',
 						'Connection': 'keep-alive',
 						'If-None-Match': `W/"77-${Metadata.ifNoneMatch}"`,
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -113,7 +117,9 @@ export class GreatDayProvider {
 						'Sec-Fetch-Mode': 'cors',
 						'Sec-Fetch-Site': 'same-site',
 						'Connection': 'keep-alive',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -191,7 +197,9 @@ export class GreatDayProvider {
 						'Key': '',
 						'Connection': 'keep-alive',
 						'TE': 'trailers',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -233,7 +241,9 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'If-None-Match': `W/"273-${Metadata.ifNoneMatch}-"`,
 						'TE': 'trailers',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -275,7 +285,9 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=utf-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -319,7 +331,9 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=UTF-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -363,7 +377,9 @@ export class GreatDayProvider {
 						'Sec-Fetch-Dest': 'empty',
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
@@ -448,7 +464,9 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=UTF-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent
+						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
+						'X-Forwarded-For': this.ip,
+						'X-Real-Ip': this.ip
 					}
 				}
 			})
