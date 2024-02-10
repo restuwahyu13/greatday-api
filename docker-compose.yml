@@ -26,12 +26,12 @@ services:
         delay: 30s
         window: 60s
     expose:
-      - 3000:3000
+      - 3000
     env_file: .env
     depends_on:
       - cache
     volumes:
-      - ./:/usr/src/app
+      - /usr/src/app
       - /usr/src/app/node_modules
     networks:
       - node_network
