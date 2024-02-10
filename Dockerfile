@@ -10,7 +10,8 @@ ADD . ./
 # FINAL STAGE 2
 #######################
 FROM start as final
-COPY --from=start . ./
+WORKDIR /usr/src/app
+COPY --from=start . /usr/src/app
 RUN rm -rf node_modules \
   && npm cache clean -f \
   && npm config delete proxy \
