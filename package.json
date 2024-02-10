@@ -2,13 +2,12 @@
 	"name": "greatday-8",
 	"version": "1.0.0",
 	"description": "Greatday absensi online",
-	"main": "./dist/main.js",
+	"main": "dist/main.js",
 	"scripts": {
-		"ts-bin": "ts-node -r tsconfig-paths/register",
 		"ts-bin:dev": "cross-env NODE_ENV=development nodemon src/main.ts",
 		"ts-bin:prod": "tsc -P tsconfig.json && tsc-alias",
 		"cleanup": "rimraf dist",
-		"start": "npm run mig:latest && node dist/main.js",
+		"start": "node dist/main.js",
 		"build": "npm run cleanup && npm run ts-bin:prod",
 		"dev": "npm run ts-bin:dev"
 	},

@@ -2,7 +2,7 @@ import { DependencyContainer } from 'tsyringe'
 
 import { Injectable, Module, Router } from '~/helpers/helper.di'
 import { UsersModule } from '~/modules/module.users'
-import { FilesModule } from './modules/module.files'
+import { FilesModule } from '~/modules/module.files'
 
 @Module([
 	{

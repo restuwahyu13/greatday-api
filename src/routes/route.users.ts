@@ -1,8 +1,8 @@
 import { Inject, Route, Router } from '~/helpers/helper.di'
 import { UsersController } from '~/controllers/controller.users'
 import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
-import { validator } from '~/middlewares/middleware.validator'
-import { AuthorizationMiddleware } from '~/middlewares/middleware.authorization'
+import { ValidatorMiddleware } from '~/middlewares/middleware.validator'
+import { AuthorizationMiddleware } from '~/middlewares/middleware.auth'
 import { FilesMiddleware } from '~/middlewares/middleware.upload'
 import { Multer } from '~/libs/lib.multer'
 
@@ -17,6 +17,8 @@ export class UsersRoute {
 		private readonly authMiddleware: AuthorizationMiddleware,
 		@Inject('FilesMiddleware')
 		private readonly filesMiddleware: FilesMiddleware,
+		@Inject('ValidatorMiddleware')
+		private readonly validatorMiddleware: ValidatorMiddleware,
 		@Inject('Multer')
 		private readonly multerLibs: Multer
 	) {
@@ -24,9 +26,13 @@ export class UsersRoute {
 	}
 
 	main(): Router {
-		this.router.post('/login', [validator(UsersLoginDTO)], this.usersController.usersLogin())
+		this.router.post('/login', [this.validatorMiddleware.use(UsersLoginDTO)], this.usersController.usersLogin())
 		this.router.get('/profile', [this.authMiddleware.use], this.usersController.usersProfile())
-		this.router.post('/set-location', [this.authMiddleware.use, validator(UsersSetLocationDTO)], this.usersController.usersSetLocation())
+		this.router.post(
+			'/set-location',
+			[this.authMiddleware.use, this.validatorMiddleware.use(UsersSetLocationDTO)],
+			this.usersController.usersSetLocation()
+		)
 		this.router.post('/record-attendance', [this.authMiddleware.use], this.usersController.usersRecordAttendance())
 		this.router.post(
 			'/upload-attendance',

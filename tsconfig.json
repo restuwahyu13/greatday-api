@@ -6,7 +6,7 @@
 		"moduleResolution": "NodeNext",
 		"moduleDetection": "auto",
 		"target": "ESNext",
-		"typeRoots": ["node_modules/@types"],
+		"typeRoots": ["node_modules/@types/"],
 		"paths": {
 			"*": ["node_modules/"],
 			"~/*": ["*"]
@@ -23,12 +23,11 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"noEmit": true,
 		"removeComments": true,
 		"strictNullChecks": false,
 		"noImplicitAny": false,
 		"noImplicitReturns": false
 	},
 	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules", "dist", "images"]
+	"exclude": ["dist", "node_modules"]
 }

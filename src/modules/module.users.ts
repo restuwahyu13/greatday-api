@@ -5,8 +5,9 @@ import { UsersService } from '~/services/service.users'
 import { UsersController } from '~/controllers/controller.users'
 import { UsersRoute } from '~/routes/route.users'
 import { GreatDayProvider } from '~/providers/provider.greatDay'
-import { AuthorizationMiddleware } from '~/middlewares/middleware.authorization'
+import { AuthorizationMiddleware } from '~/middlewares/middleware.auth'
 import { FilesMiddleware } from '~/middlewares/middleware.upload'
+import { ValidatorMiddleware } from '~/middlewares/middleware.validator'
 import { Redis } from '~/libs/lib.redis'
 import { Axios } from '~/libs/lib.axios'
 import { JsonWebToken } from '~/libs/lib.jwt'
@@ -21,6 +22,7 @@ import { UsersMetadata } from '~/helpers/helper.usersMetadata'
 	{ token: 'GreatDayProvider', useClass: GreatDayProvider },
 	{ token: 'AuthMiddleware', useClass: AuthorizationMiddleware },
 	{ token: 'FilesMiddleware', useClass: FilesMiddleware },
+	{ token: 'ValidatorMiddleware', useClass: ValidatorMiddleware },
 	{ token: 'Redis', useClass: Redis },
 	{ token: 'Axios', useClass: Axios },
 	{ token: 'Jwt', useClass: JsonWebToken },

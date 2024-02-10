@@ -2,7 +2,7 @@ import { Inject, Route, Router } from '~/helpers/helper.di'
 import { FilesController } from '~/controllers/controller.files'
 import { Multer } from '~/libs/lib.multer'
 import { FilesMiddleware } from '~/middlewares/middleware.upload'
-import { AuthorizationMiddleware } from '~/middlewares/middleware.authorization'
+import { AuthorizationMiddleware } from '~/middlewares/middleware.auth'
 
 @Route()
 export class FilesRoute {
