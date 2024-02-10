@@ -14,9 +14,9 @@ export const ip = (): Handler => {
 		res.setHeader('X-Forwarded-For', ip)
 		res.setHeader('X-Real-Ip', ip)
 
-		req.headers['Host'] = domain
-		req.headers['Origin'] = domain
-		req.headers['Referer'] = domain
+		req.headers['host'] = domain
+		req.headers['origin'] = domain
+		req.headers['referer'] = domain
 
 		req.headers['X-Forwarded-host'] = domain
 		req.headers['X-Forwarded-for'] = ip
