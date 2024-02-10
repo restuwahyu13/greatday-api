@@ -4,23 +4,20 @@
 DOCKER := docker
 COMPOSE := docker-compose
 
-dk-build:
-	${DOCKER} build --tag node-todo:latest --compress .
-	${DOCKER} tag node-todo:latest 705471/node-todo:latest
+dkbu:
+	${DOCKER} build --tag node-gr8-api:latest --compress .
+	${DOCKER} tag node-gr8-api:latest 705471/node-gr8-api:latest
 
-dk-deploy:
-	${DOCKER} push 705471/node-todo:latest
+dkpu:
+	${DOCKER} push 705471/node-gr8-api:latest
 
-dk-run:
-	${DOCKER} run --name node-todo -p 3030:3030 --restart always --env-file .env -d 705471/node-todo:latest
+dkru:
+	${DOCKER} run --name node-gr8-api -p 3000:3000 --restart always --env-file .env --privileged -d 705471/node-gr8:latest
 
-dk-test:
-	${DOCKER} run -e API_URL=https://ae14-2001-448a-2082-2e1a-bb2d-c09-bd52-ec05.ap.ngrok.io monsterup/devcode-unit-test-1
-
-dc-up:
+dcu:
 	${COMPOSE} up -d --remove-orphans --build
 
-dc-down:
+dcd:
 	${COMPOSE} down
 
 #############################
@@ -36,28 +33,3 @@ start:
 
 build:
 	${NPM} run build
-
-#############################
-# Typeorm Database Teritory
-#############################
-
-orsrun:
-ifdef type
-	${NPM} run seed:${type}
-endif
-
-orscon:
-	${NPM} run seed:config
-
-ormake:
-ifdef name
-	${NPM} run orm:make ${name}
-endif
-
-ormig:
-ifdef type
-	${NPM} run orm:${type}
-endif
-
-orlist:
-	${NPM} run orm:list
