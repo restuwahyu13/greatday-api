@@ -36,7 +36,7 @@ export class AuthorizationMiddleware {
 				throw apiResponse({ stat_code: status.UNAUTHORIZED, err_message: 'Invalid token' })
 			}
 
-			const accessToken: string = await redis.get(`${decodeToken.jti}:${decodeToken.key}:token`)
+			const accessToken: string = await redis.get(`${decodeToken.jti}:token`)
 			if (authToken != accessToken) {
 				throw apiResponse({ stat_code: status.UNAUTHORIZED, err_message: 'Invalid token' })
 			}

@@ -156,7 +156,7 @@ export class JsonWebToken {
 				passphrase: signature.cipherKey
 			})
 
-			const tokenKey: string = `${prefix}:${symmetricEncrypt}:token`
+			const tokenKey: string = `${prefix}:token`
 			const tokenExist: number = await this.redis.exists(tokenKey)
 
 			if (tokenExist <= 0) {
