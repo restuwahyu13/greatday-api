@@ -18,9 +18,9 @@ export const ip = (): Handler => {
 		req.headers['origin'] = domain
 		req.headers['referer'] = domain
 
-		req.headers['X-Forwarded-host'] = domain
-		req.headers['X-Forwarded-for'] = ip
-		req.headers['X-Real-ip'] = ip
+		req.headers['X-Forwarded-Host'] = domain
+		req.headers['X-Forwarded-For'] = ip
+		req.headers['X-Real-Ip'] = ip
 
 		next()
 	}

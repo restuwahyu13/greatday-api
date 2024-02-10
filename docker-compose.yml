@@ -7,37 +7,98 @@ services:
     build: .
     restart: always
     healthcheck:
-      start_period: 60s
-      timeout: 120s
-      interval: 30s
-      test: echo ${USER}
-    ports:
+      interval: 60s
+      timeout: 30s
+      start_period: 15s
+      retries: 5
+      test: 'env | grep HOME'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        delay: 30s
+        window: 60s
+    expose:
       - 3000:3000
     env_file: .env
     depends_on:
-      - redis
+      - cache
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
     networks:
-      - node_networks
+      - node_network
   ##############################
   # REDIS SERVICE ENVIRONMENT
   ##############################
-  redis:
+  cache:
     image: redis:7-alpine
     restart: always
     healthcheck:
-      start_period: 60s
-      timeout: 120s
-      interval: 30s
-      test: echo ${USER}
+      interval: 60s
+      timeout: 30s
+      start_period: 15s
+      retries: 5
+      test: 'env | grep HOME'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        delay: 30s
+        window: 60s
     ports:
       - 6379:6379
     volumes:
       - redis:/var/lib/redis
     networks:
-      - node_networks
+      - node_network
+  # ===================================
+  # PROXY SERVICES ENVIRONMENT
+  # ===================================
+  proxy:
+    image: nginx:alpine
+    restart: always
+    healthcheck:
+      interval: 60s
+      timeout: 30s
+      start_period: 15s
+      retries: 5
+      test: 'env | grep HOME'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        delay: 30s
+        window: 60s
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ${PWD}/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - node_network
 # #############################
 # # VOLUME PERSISTENT DATA
 # #############################
@@ -47,4 +108,4 @@ volumes:
     # NETWORKS SHARING GROUP
     #############################
 networks:
-  node_networks:
+  node_network:
