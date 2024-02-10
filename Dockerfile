@@ -1,7 +1,7 @@
 ######################
 # START STAGE 1
 ######################
-FROM node:16.15.0-alpine as start
+FROM node:16.20.2-alpine as start
 USER ${USER}
 ADD ./package.*json ./
 ADD . ./
@@ -18,7 +18,8 @@ RUN rm -rf node_modules \
   && npm config set fetch-retry-mintimeout 6000000 \
   && npm config set fetch-retry-maxtimeout 12000000 \
   && npm config set fetch-timeout 30000000 \
-  && npm i --loglevel verbose --no-audit --legacy-peer-deps \
-  && npm run build
-EXPOSE 3030
-CMD npm run start
+  && npm i --loglevel verbose --no-audit \
+  && npm run build \
+  && mkdir images
+EXPOSE 3000
+CMD npm start
