@@ -6,11 +6,8 @@ export const ip = (): Handler => {
 		const ip: string = randomIpAddress()
 		const domain: string = randomDomainName()
 
-		res.setHeader('Host', domain)
 		res.setHeader('Origin', domain)
 		res.setHeader('Referer', domain)
-
-		res.setHeader('X-Forwarded-Host', domain)
 		res.setHeader('X-Forwarded-For', ip)
 		res.setHeader('X-Real-Ip', ip)
 

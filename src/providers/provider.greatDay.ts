@@ -78,10 +78,11 @@ export class GreatDayProvider {
 						'ngsw-bypass': '',
 						'Key': '',
 						'Connection': 'keep-alive',
-						'If-None-Match': `W/"77-${Metadata.ifNoneMatch}"`,
+						'If-None-Match': `W/"${Math.floor(Math.random() * 900) + 100}-${Metadata.ifNoneMatch}"`,
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -119,7 +120,8 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -199,7 +201,8 @@ export class GreatDayProvider {
 						'TE': 'trailers',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -239,11 +242,12 @@ export class GreatDayProvider {
 						'Key': '',
 						'Authorization': user.id,
 						'Connection': 'keep-alive',
-						'If-None-Match': `W/"273-${Metadata.ifNoneMatch}-"`,
+						'If-None-Match': `W/"${Math.floor(Math.random() * 900) + 100}-${Metadata.ifNoneMatch}-"`,
 						'TE': 'trailers',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -287,7 +291,8 @@ export class GreatDayProvider {
 						'Content-Type': 'application/json; charset=utf-8',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -333,7 +338,8 @@ export class GreatDayProvider {
 						'Content-Type': 'application/json; charset=UTF-8',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -379,7 +385,8 @@ export class GreatDayProvider {
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
@@ -466,7 +473,8 @@ export class GreatDayProvider {
 						'Content-Type': 'application/json; charset=UTF-8',
 						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
 						'X-Forwarded-For': this.ip,
-						'X-Real-Ip': this.ip
+						'X-Real-IP': this.ip,
+						'X-Client-IP': this.ip
 					}
 				}
 			})
