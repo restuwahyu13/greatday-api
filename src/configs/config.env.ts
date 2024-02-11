@@ -10,6 +10,7 @@ export class ConfigsEnvironment {
 	static readonly GRD_ORIGIN_URL: string = process.env.GRD_ORIGIN_URL ?? 'https://example.com'
 	static readonly GRD_EPIC_URL: string = process.env.GRD_EPIC_URL! ?? 'https://example.com'
 	static readonly GRD_DATAON_URL: string = process.env.GRD_DATAON_URL! ?? 'https://example.com'
+	static readonly GRD_SAAS_URL: string = process.env.GRD_SAAS_URL! ?? 'https://example.com'
 	static readonly USER_AGENT: UserAgent = ConfigsEnvironment.userAgent
 	static readonly JWT_SECRET_KEY: string = process.env.JWT_SECRET_KEY ?? 'abcdefg123456'
 	static readonly JWT_EXPIRED: number = +process.env.JWT_EXPIRED ?? 1200

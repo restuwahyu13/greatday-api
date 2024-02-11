@@ -78,6 +78,7 @@ export class GreatDayProvider {
 				method: EAxiosHttpMethod.GET,
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_DATAON_URL.split('//')[1],
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
@@ -129,6 +130,7 @@ export class GreatDayProvider {
 				method: EAxiosHttpMethod.GET,
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_SAAS_URL.split('//')[1],
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
@@ -210,6 +212,7 @@ export class GreatDayProvider {
 				},
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
@@ -261,6 +264,7 @@ export class GreatDayProvider {
 				method: EAxiosHttpMethod.GET,
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Accept': 'application/json',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
@@ -313,6 +317,7 @@ export class GreatDayProvider {
 				method: EAxiosHttpMethod.GET,
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',
@@ -366,6 +371,7 @@ export class GreatDayProvider {
 				},
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',
@@ -421,6 +427,7 @@ export class GreatDayProvider {
 				configs: {
 					headers: {
 						...formData.getHeaders(),
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '300000',
@@ -515,6 +522,7 @@ export class GreatDayProvider {
 				},
 				configs: {
 					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',

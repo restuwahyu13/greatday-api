@@ -20,13 +20,17 @@ headers: ${JSON.stringify(req.headers)}
 =================================================
 		`)
 
+		res.setHeader('Host', domain)
 		res.setHeader('Origin', domain)
 		res.setHeader('Referer', domain)
+		res.setHeader('X-Forwarded-Host', domain)
 		res.setHeader('X-Forwarded-For', ip)
 		res.setHeader('X-Real-IP', ip)
 		res.setHeader('X-Client-IP', ip)
 		res.setHeader('User-Agent', ConfigsEnvironment.USER_AGENT.data.userAgent)
 
+		req.headers['host'] = domain
+		req.headers['x-forwarded-host'] = domain
 		req.headers['x-forwarded-for'] = ip
 		req.headers['x-real-ip'] = ip
 		req.headers['x-client-ip'] = ip
