@@ -130,7 +130,7 @@ export class GreatDayProvider {
 				method: EAxiosHttpMethod.GET,
 				configs: {
 					headers: {
-						'Host': ConfigsEnvironment.GRD_SAAS_URL.split('//')[1],
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
