@@ -2,6 +2,7 @@ import { Handler, NextFunction, Request, Response } from 'express'
 import consola from 'consola'
 import { randomDomainName } from '~/helpers/helper.randomString'
 import { ConfigsEnvironment } from '~/configs/config.env'
+import { Container } from '~/helpers/helper.di'
 
 export const ip = (ip: string): Handler => {
 	return (req: Request, res: Response, next: NextFunction): void => {
@@ -30,6 +31,8 @@ headers: ${JSON.stringify(req.headers)}
 		req.headers['x-real-ip'] = ip
 		req.headers['x-client-ip'] = ip
 		req.headers['user-agent'] = ConfigsEnvironment.USER_AGENT.data.userAgent
+
+		Container.register('Req', { useValue: req })
 
 		consola.info(`
 =================================================
