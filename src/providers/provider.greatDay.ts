@@ -152,9 +152,9 @@ export class GreatDayProvider {
 			})
 
 			if (!ldap?.uid) {
-				throw apiResponse({ stat_code: status.UNPROCESSABLE_ENTITY, err_message: 'Invalid email' })
-			} else if (uid !== ldap.uid) {
-				throw apiResponse({ stat_code: status.UNPROCESSABLE_ENTITY, err_message: 'Invalid email' })
+				throw apiResponse({ stat_code: status.NOT_ACCEPTABLE, err_message: 'User email not found' })
+			} else if (email !== ldap.uid) {
+				throw apiResponse({ stat_code: status.NOT_ACCEPTABLE, err_message: 'User email not found' })
 			}
 
 			return { company, ldap }
