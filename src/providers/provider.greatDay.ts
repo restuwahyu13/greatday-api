@@ -181,7 +181,7 @@ export class GreatDayProvider {
 				data: {
 					username: ldap.uid,
 					password: body.password,
-					pswd: randomXGDParams(40),
+					pswd: body.password,
 					npwd: randomXGDParams(40),
 					ist: company.companyCode,
 					preLoginData: {
