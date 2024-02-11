@@ -14,6 +14,7 @@ import { JsonWebToken } from '~/libs/lib.jwt'
 import { Multer } from '~/libs/lib.multer'
 import { FormData } from '~/libs/lib.formdata'
 import { UsersMetadata } from '~/helpers/helper.usersMetadata'
+import { RequestMetadata } from '~/helpers/helper.requestMetadata'
 
 @Module([
 	{ token: 'UsersService', useClass: UsersService },
@@ -32,6 +33,12 @@ import { UsersMetadata } from '~/helpers/helper.usersMetadata'
 		token: 'UsersMetadata',
 		useFactory: (dc: DependencyContainer) => {
 			return dc.resolve(UsersMetadata)
+		}
+	},
+	{
+		token: 'RequestMetadata',
+		useFactory: (dc: DependencyContainer) => {
+			return dc.resolve(RequestMetadata)
 		}
 	}
 ])

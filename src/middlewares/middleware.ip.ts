@@ -1,15 +1,49 @@
 import { Handler, NextFunction, Request, Response } from 'express'
-import { randomDomainName, randomIpAddress } from '~/helpers/helper.randomString'
+import consola from 'consola'
+import { randomDomainName } from '~/helpers/helper.randomString'
+import { ConfigsEnvironment } from '~/configs/config.env'
 
-export const ip = (): Handler => {
-	return (_req: Request, res: Response, next: NextFunction): void => {
-		const ip: string = randomIpAddress()
+export const ip = (ip: string): Handler => {
+	return (req: Request, res: Response, next: NextFunction): void => {
 		const domain: string = randomDomainName()
+
+		consola.info(`
+======================================
+======== Req Headers From Client =========
+======================================
+
+headers: ${JSON.stringify(req.headers)}
+
+======================================
+======================================
+======================================
+		`)
+
+		console.log('\n')
+
+		consola.info(`
+======================================
+======== Res Headers From Client =========
+======================================
+
+headers: ${JSON.stringify(res.getHeaders())}
+
+======================================
+======================================
+======================================
+		`)
 
 		res.setHeader('Origin', domain)
 		res.setHeader('Referer', domain)
 		res.setHeader('X-Forwarded-For', ip)
-		res.setHeader('X-Real-Ip', ip)
+		res.setHeader('X-Real-IP', ip)
+		res.setHeader('X-Client-IP', ip)
+		res.setHeader('User-Agent', ConfigsEnvironment.USER_AGENT.data.userAgent)
+
+		req.headers['x-forwarded-for'] = ip
+		req.headers['x-real-ip'] = ip
+		req.headers['x-client-ip'] = ip
+		req.headers['user-agent'] = ConfigsEnvironment.USER_AGENT.data.userAgent
 
 		next()
 	}

@@ -12,11 +12,13 @@ import compression from 'compression'
 import zlib from 'zlib'
 import hpp from 'hpp'
 import consola from 'consola'
+import { mw as requestIp } from 'request-ip'
 
 import { apiResponse } from '~/helpers/helper.apiResponse'
 import { ip } from '~/middlewares/middleware.ip'
 import { Container, Injectable } from '~/helpers/helper.di'
 import { AppModule } from '~/app.module'
+import { randomIpAddress } from '~/helpers/helper.randomString'
 
 @Injectable()
 class App {
@@ -24,21 +26,26 @@ class App {
 	private server: Server
 	private env: string
 	private port: number
+	private ip: string
 
 	constructor() {
 		this.app = express()
 		this.server = http.createServer(this.app)
 		this.env = process.env.NODE_ENV
 		this.port = +process.env.PORT
+		this.ip = randomIpAddress()
 	}
 
 	private config(): void {
+		this.app.enable('trust proxy')
 		this.app.disable('x-powered-by')
+		this.app.set('trust proxy', this.ip)
 		Container.resolve<AppModule>(AppModule)
 	}
 
 	private middleware(): void {
-		this.app.use(ip())
+		this.app.use(requestIp())
+		this.app.use(ip(this.ip))
 		this.app.use(bodyParser.json({ limit: '1mb' }))
 		this.app.use(bodyParser.raw({ inflate: true, limit: '1mb', type: 'application/json' }))
 		this.app.use(bodyParser.urlencoded({ extended: true }))
@@ -71,6 +78,7 @@ class App {
 
 	private globalRoute(): void {
 		this.app.all(['/'], (_req: Request, res: Response): OutgoingMessage => {
+			console.log(_req.headers)
 			return res.status(status.OK).json(apiResponse({ stat_code: status.OK, stat_message: 'Ping!' }))
 		})
 	}

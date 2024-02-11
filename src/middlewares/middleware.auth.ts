@@ -43,6 +43,7 @@ export class AuthorizationMiddleware {
 
 			const verifyRes: JWTVerifyResult<JWTPayload> = await jwt.verify(decodeToken.jti, authToken)
 			Container.register('User', { useValue: await redis.hget(`${verifyRes.payload.jti}:data`, 'users') })
+			Container.register('Req', { useValue: req })
 
 			next()
 		} catch (e: any) {

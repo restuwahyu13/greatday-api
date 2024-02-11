@@ -1,5 +1,6 @@
 import { StatusCodes as status } from 'http-status-codes'
 import FormDataNode from 'form-data'
+import { Request } from 'express'
 
 import { ConfigsEnvironment } from '~/configs/config.env'
 import { UsersLoginDTO, UsersSetLocationDTO } from '~/dtos/dto.users'
@@ -8,6 +9,13 @@ import { Injectable } from '~/helpers/helper.di'
 import { Metadata } from '~/helpers/helper.metadata'
 import { randomIpAddress, randomXGDParams } from '~/helpers/helper.randomString'
 import { Axios, EAxiosHttpMethod } from '~/libs/lib.axios'
+
+interface IHeaders {
+	userAgent: string
+	xForwardedFor: any
+	xRealIp: any
+	xClientIp: any
+}
 
 interface ISearchCompany {
 	companyName: string
@@ -55,8 +63,15 @@ export interface ISetLocation {
 export class GreatDayProvider {
 	ip: string = randomIpAddress()
 
-	private async seachCompany(axios: Axios, companyName: string): Promise<ISearchCompany> {
+	private async seachCompany(axios: Axios, req: Request, companyName: string): Promise<ISearchCompany> {
 		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
 			const company: Record<string, any> = await axios.request({
 				url: ConfigsEnvironment.GRD_DATAON_URL,
 				path: `/sfCompany/search?company=${companyName}`,
@@ -79,10 +94,10 @@ export class GreatDayProvider {
 						'Key': '',
 						'Connection': 'keep-alive',
 						'If-None-Match': `W/"${Math.floor(Math.random() * 900) + 100}-${Metadata.ifNoneMatch}"`,
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -97,9 +112,16 @@ export class GreatDayProvider {
 		}
 	}
 
-	private async checkLDAP(axios: Axios, companyName: string, uid: string): Promise<ICheckLDAPAndSearchCompany> {
+	private async checkLDAP(axios: Axios, req: Request, companyName: string, uid: string): Promise<ICheckLDAPAndSearchCompany> {
 		try {
-			const company: ISearchCompany = await this.seachCompany(axios, companyName)
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
+			const company: ISearchCompany = await this.seachCompany(axios, req, companyName)
 
 			const ldap: ICheckLADP = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
@@ -118,10 +140,10 @@ export class GreatDayProvider {
 						'Sec-Fetch-Mode': 'cors',
 						'Sec-Fetch-Site': 'same-site',
 						'Connection': 'keep-alive',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -136,9 +158,16 @@ export class GreatDayProvider {
 		}
 	}
 
-	async authLogin(axios: Axios, body: UsersLoginDTO): Promise<IUser> {
+	async authLogin(axios: Axios, req: Request, body: UsersLoginDTO): Promise<IUser> {
 		try {
-			const { company, ldap }: ICheckLDAPAndSearchCompany = await this.checkLDAP(axios, body.company, body.uid)
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
+			const { company, ldap }: ICheckLDAPAndSearchCompany = await this.checkLDAP(axios, req, body.company, body.uid)
 
 			const userLogin: IUser = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
@@ -199,10 +228,10 @@ export class GreatDayProvider {
 						'Key': '',
 						'Connection': 'keep-alive',
 						'TE': 'trailers',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -217,8 +246,15 @@ export class GreatDayProvider {
 		}
 	}
 
-	async profile(axios: Axios, user: IUser): Promise<Record<string, any>> {
+	async profile(axios: Axios, user: IUser, req: Request): Promise<Record<string, any>> {
 		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
 			const userProfile: Record<string, any> = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
 				path: '/auth/profile',
@@ -244,10 +280,10 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'If-None-Match': `W/"${Math.floor(Math.random() * 900) + 100}-${Metadata.ifNoneMatch}-"`,
 						'TE': 'trailers',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -262,8 +298,15 @@ export class GreatDayProvider {
 		}
 	}
 
-	private async currentTime(axios: Axios, sessionId: string): Promise<ICurrentTime> {
+	private async currentTime(axios: Axios, req: Request, sessionId: string): Promise<ICurrentTime> {
 		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
 			const currentTime: ICurrentTime = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
 				path: '/currentTime',
@@ -289,10 +332,10 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=utf-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -303,8 +346,15 @@ export class GreatDayProvider {
 		}
 	}
 
-	async checkLocation(axios: Axios, user: IUser, body: UsersSetLocationDTO): Promise<Record<string, any>> {
+	async checkLocation(axios: Axios, user: IUser, req: Request, body: UsersSetLocationDTO): Promise<Record<string, any>> {
 		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
 			const checkLocation: Record<string, any> = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
 				path: '/ttademplocation/checkLocation',
@@ -336,10 +386,10 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=UTF-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -354,8 +404,15 @@ export class GreatDayProvider {
 		}
 	}
 
-	async uploadAttendancePhoto(axios: Axios, formData: FormDataNode, user: IUser) {
+	async uploadAttendancePhoto(axios: Axios, formData: FormDataNode, user: IUser, req: Request) {
 		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
 			const uploadAttendancePhoto: Record<string, any> = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
 				path: `/storage/upload/storageAttendance/${user.companyCode}?access_token=${user.id}`,
@@ -383,10 +440,10 @@ export class GreatDayProvider {
 						'Sec-Fetch-Dest': 'empty',
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})
@@ -401,9 +458,16 @@ export class GreatDayProvider {
 		}
 	}
 
-	async recordAttendance(axios: Axios, user: IUser, location: ISetLocation, fileName: string) {
+	async recordAttendance(axios: Axios, user: IUser, req: Request, location: ISetLocation, fileName: string) {
 		try {
-			const currentTime: ICurrentTime = await this.currentTime(axios, user.id)
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
+			const currentTime: ICurrentTime = await this.currentTime(axios, req, user.id)
 
 			const recordAttendance: any = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
@@ -471,10 +535,10 @@ export class GreatDayProvider {
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
 						'Content-Type': 'application/json; charset=UTF-8',
-						'User-Agent': ConfigsEnvironment.USER_AGENT.data.userAgent,
-						'X-Forwarded-For': this.ip,
-						'X-Real-IP': this.ip,
-						'X-Client-IP': this.ip
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
 					}
 				}
 			})

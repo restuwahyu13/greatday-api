@@ -14,6 +14,8 @@ import { UsersMetadata } from '~/helpers/helper.usersMetadata'
 import { FormData } from '~/libs/lib.formdata'
 import { ConfigsEnvironment } from '~/configs/config.env'
 import { resolve } from 'path'
+import { RequestMetadata } from '~/helpers/helper.requestMetadata'
+import { Request } from 'express'
 
 @Service()
 export class UsersService {
@@ -22,6 +24,8 @@ export class UsersService {
 		private readonly greatDayProvider: GreatDayProvider,
 		@Inject('UsersMetadata')
 		private readonly usersMetadata: UsersMetadata,
+		@Inject('RequestMetadata')
+		private readonly requestMetadata: RequestMetadata,
 		@Inject('Axios')
 		private readonly axiosLibs: Axios,
 		@Inject('Redis')
@@ -34,7 +38,8 @@ export class UsersService {
 
 	async usersLogin(body: UsersLoginDTO): Promise<ApiResponse> {
 		try {
-			const user: IUser = await this.greatDayProvider.authLogin(this.axiosLibs, body)
+			const req: Request = this.requestMetadata.req()
+			const user: IUser = await this.greatDayProvider.authLogin(this.axiosLibs, req, body)
 
 			const tokenKey: string = `${user.userId}:data`
 			const tokenExist: number = await this.redisLibs.hexists(tokenKey, 'users')
@@ -68,7 +73,9 @@ export class UsersService {
 	async usersProfile(): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
-			const userProfile: Record<string, any> = await this.greatDayProvider.profile(this.axiosLibs, user)
+			const req: Request = this.requestMetadata.req()
+
+			const userProfile: Record<string, any> = await this.greatDayProvider.profile(this.axiosLibs, user, req)
 
 			return apiResponse({ stat_code: status.OK, stat_message: 'Success', data: userProfile })
 		} catch (e: any) {
@@ -79,7 +86,9 @@ export class UsersService {
 	async usersSetLocation(body: UsersSetLocationDTO): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
-			const checkLocaion: Record<string, any> = await this.greatDayProvider.checkLocation(this.axiosLibs, user, body)
+			const req: Request = this.requestMetadata.req()
+
+			const checkLocaion: Record<string, any> = await this.greatDayProvider.checkLocation(this.axiosLibs, user, req, body)
 
 			if (checkLocaion) {
 				await this.redisLibs.hsetEx(`${user.userId}:location`, 'users', user.ttl, body)
@@ -94,9 +103,10 @@ export class UsersService {
 	async usersUploadAttendancePhoto(file: Express.Multer.File): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
-			const form: FormDataNode = await this.formDataLibs.append(file.filename)
+			const req: Request = this.requestMetadata.req()
 
-			const uploadAttendancePhoto: Record<string, any> = await this.greatDayProvider.uploadAttendancePhoto(this.axiosLibs, form, user)
+			const form: FormDataNode = await this.formDataLibs.append(file.filename)
+			const uploadAttendancePhoto: Record<string, any> = await this.greatDayProvider.uploadAttendancePhoto(this.axiosLibs, form, user, req)
 
 			if (uploadAttendancePhoto) {
 				await this.redisLibs.setEx(`${user.userId}:filename`, user.ttl, uploadAttendancePhoto.fileName)
@@ -111,6 +121,8 @@ export class UsersService {
 	async usersRecordAttendance(body: UsersRecordAttendanceDTO): Promise<ApiResponse> {
 		try {
 			const user: IUser = this.usersMetadata.user()
+			const req: Request = this.requestMetadata.req()
+
 			const fileName: string = await this.redisLibs.get(`${user.userId}:filename`)
 			const location: ISetLocation = await this.redisLibs.hget(`${user.userId}:location`, 'users')
 
@@ -122,7 +134,7 @@ export class UsersService {
 				throw apiResponse({ stat_code: status.NOT_ACCEPTABLE, err_message: 'Invalid filename' })
 			}
 
-			const recordAttendance: Record<string, any> = await this.greatDayProvider.recordAttendance(this.axiosLibs, user, location, fileName)
+			const recordAttendance: Record<string, any> = await this.greatDayProvider.recordAttendance(this.axiosLibs, user, req, location, fileName)
 
 			if (recordAttendance) {
 				const dir: string = resolve(ConfigsEnvironment.STORAGE_DIR, fileName.split('-')[4])
