@@ -113,7 +113,7 @@ export class GreatDayProvider {
 		}
 	}
 
-	private async checkLDAP(axios: Axios, req: Request, companyName: string, uid: string): Promise<ICheckLDAPAndSearchCompany> {
+	private async checkLDAP(axios: Axios, req: Request, companyName: string, email: string): Promise<ICheckLDAPAndSearchCompany> {
 		try {
 			const headers: IHeaders = {
 				userAgent: req.headers['user-agent'],
@@ -123,6 +123,7 @@ export class GreatDayProvider {
 			}
 
 			const company: ISearchCompany = await this.seachCompany(axios, req, companyName)
+			const uid: string = Buffer.from(email).toString('base64')
 
 			const ldap: ICheckLADP = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,
@@ -151,7 +152,9 @@ export class GreatDayProvider {
 			})
 
 			if (!ldap?.uid) {
-				throw apiResponse({ stat_code: status.UNPROCESSABLE_ENTITY, err_message: 'Invalid uid' })
+				throw apiResponse({ stat_code: status.UNPROCESSABLE_ENTITY, err_message: 'Invalid email' })
+			} else if (uid !== ldap.uid) {
+				throw apiResponse({ stat_code: status.UNPROCESSABLE_ENTITY, err_message: 'Invalid email' })
 			}
 
 			return { company, ldap }
@@ -169,7 +172,7 @@ export class GreatDayProvider {
 				xClientIp: req.headers['x-client-ip']
 			}
 
-			const { company, ldap }: ICheckLDAPAndSearchCompany = await this.checkLDAP(axios, req, body.company, body.uid)
+			const { company, ldap }: ICheckLDAPAndSearchCompany = await this.checkLDAP(axios, req, body.company, body.email)
 
 			const userLogin: IUser = await axios.request({
 				url: ConfigsEnvironment.GRD_EPIC_URL,

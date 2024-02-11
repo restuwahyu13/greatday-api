@@ -1,4 +1,4 @@
-import { IsLatitude, IsLongitude, IsNotEmpty, IsString, Matches } from 'class-validator'
+import { IsEmail, IsLatitude, IsLongitude, IsNotEmpty, IsString, Matches } from 'class-validator'
 
 export class UsersLoginDTO {
 	@IsNotEmpty()
@@ -6,8 +6,8 @@ export class UsersLoginDTO {
 	company!: any
 
 	@IsNotEmpty()
-	@IsString()
-	uid!: any
+	@IsEmail()
+	email!: any
 
 	@IsNotEmpty()
 	@IsString()
