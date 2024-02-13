@@ -135,6 +135,7 @@ export class GreatDayProvider {
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'isUpload': 'true',
 						'Origin': ConfigsEnvironment.GRD_ORIGIN_URL,
@@ -219,6 +220,7 @@ export class GreatDayProvider {
 						'Accept': 'application/json, text/plain, */*',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Content-Type': 'application/json',
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'timeout': '60000',
@@ -271,6 +273,7 @@ export class GreatDayProvider {
 						'Accept': 'application/json',
 						'Accept-Language': 'en-US,en;q=0.5',
 						'Accept-Encoding': 'gzip, deflate, br',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
 						'timeout': '60000',
 						'app': 'gd8',
@@ -324,6 +327,7 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'DNT': '1',
 						'version': Metadata.version,
 						'sec-ch-ua-mobile': Metadata.secChUaMobile,
@@ -378,6 +382,7 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'DNT': '1',
 						'version': Metadata.version,
 						'sec-ch-ua-mobile': Metadata.secChUaMobile,
@@ -434,6 +439,7 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '300000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'DNT': '1',
 						'version': Metadata.version,
 						'sec-ch-ua-mobile': Metadata.secChUaMobile,
@@ -529,6 +535,7 @@ export class GreatDayProvider {
 						'Connection': 'keep-alive',
 						'sec-ch-ua': Metadata.secChUa,
 						'timeout': '60000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
 						'DNT': '1',
 						'version': Metadata.version,
 						'sec-ch-ua-mobile': Metadata.secChUaMobile,
@@ -564,5 +571,117 @@ export class GreatDayProvider {
 		}
 	}
 
-	listAttendance() {}
+	async listAttendaceToday(axios: Axios, user: IUser, req: Request): Promise<Record<string, any>> {
+		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
+			const currentTime: ICurrentTime = await this.currentTime(axios, req, user.id)
+
+			const todayAttendance: Record<string, any> = await axios.request({
+				url: ConfigsEnvironment.GRD_EPIC_URL,
+				path: '/attendances/getNewTodayAttendance',
+				method: EAxiosHttpMethod.POST,
+				data: {
+					empId: user.empId,
+					date: currentTime.data
+				},
+				configs: {
+					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
+						'Connection': 'keep-alive',
+						'sec-ch-ua': Metadata.secChUa,
+						'timeout': '60000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
+						'DNT': '1',
+						'version': Metadata.version,
+						'sec-ch-ua-mobile': Metadata.secChUaMobile,
+						'Authorization': user.id,
+						'ngsw-bypass': '',
+						'Accept': 'application/json',
+						'X-GD-Params': Metadata.xGdParams,
+						'Key': '',
+						'app': 'gd8',
+						'sec-ch-ua-platform': Metadata.secChUaPlatform,
+						'Origin': ConfigsEnvironment.GRD_ORIGIN_URL,
+						'Sec-Fetch-Site': 'same-site',
+						'Sec-Fetch-Mode': 'cors',
+						'Sec-Fetch-Dest': 'empty',
+						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
+						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
+						'Content-Type': 'application/json; charset=UTF-8',
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
+					}
+				}
+			})
+
+			return todayAttendance.data
+		} catch (e: any) {
+			throw apiResponse({ err_message: e })
+		}
+	}
+
+	async listAttendaceTemp(axios: Axios, user: IUser, req: Request): Promise<Record<string, any>> {
+		try {
+			const headers: IHeaders = {
+				userAgent: req.headers['user-agent'],
+				xForwardedFor: req.headers['x-forwarded-for'],
+				xRealIp: req.headers['x-real-ip'],
+				xClientIp: req.headers['x-client-ip']
+			}
+
+			const currentTime: ICurrentTime = await this.currentTime(axios, req, user.id)
+
+			const tempAttendance: Record<string, any> = await axios.request({
+				url: ConfigsEnvironment.GRD_EPIC_URL,
+				path: '/attendances/getAttendanceTemp',
+				method: EAxiosHttpMethod.POST,
+				data: {
+					empId: user.empId,
+					date: currentTime.data
+				},
+				configs: {
+					headers: {
+						'Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
+						'Connection': 'keep-alive',
+						'sec-ch-ua': Metadata.secChUa,
+						'timeout': '60000',
+						'X-Forwarded-Host': ConfigsEnvironment.GRD_EPIC_URL.split('//')[1],
+						'DNT': '1',
+						'version': Metadata.version,
+						'sec-ch-ua-mobile': Metadata.secChUaMobile,
+						'Authorization': user.id,
+						'ngsw-bypass': '',
+						'Accept': 'application/json',
+						'X-GD-Params': Metadata.xGdParams,
+						'Key': '',
+						'app': 'gd8',
+						'sec-ch-ua-platform': Metadata.secChUaPlatform,
+						'Origin': ConfigsEnvironment.GRD_ORIGIN_URL,
+						'Sec-Fetch-Site': 'same-site',
+						'Sec-Fetch-Mode': 'cors',
+						'Sec-Fetch-Dest': 'empty',
+						'Referer': ConfigsEnvironment.GRD_ORIGIN_URL,
+						'Accept-Language': 'id,en-US;q=0.9,en;q=0.8',
+						'Content-Type': 'application/json; charset=UTF-8',
+						'User-Agent': headers.userAgent,
+						'X-Forwarded-For': headers.xForwardedFor,
+						'X-Real-IP': headers.xRealIp,
+						'X-Client-IP': headers.xClientIp
+					}
+				}
+			})
+
+			return tempAttendance.data
+		} catch (e: any) {
+			throw apiResponse({ err_message: e })
+		}
+	}
 }

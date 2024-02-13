@@ -15,4 +15,5 @@ export class ConfigsEnvironment {
 	static readonly JWT_SECRET_KEY: string = process.env.JWT_SECRET_KEY ?? 'abcdefg123456'
 	static readonly JWT_EXPIRED: number = +process.env.JWT_EXPIRED ?? 1200
 	static readonly FILE_SIZE_MAX: number = +process.env.FILE_SIZE_MAX ?? 1048576
+	static readonly FILE_MIME_TYPE: string = process.env.FILE_MIME_TYPE ?? 'png,jpg,jpeg,webp'
 }

@@ -68,4 +68,26 @@ export class UsersController {
 			}
 		}
 	}
+
+	usersAttendanceToday(): Handler {
+		return async (_req: Request, res: Response, _next: NextFunction): Promise<OutgoingMessage> => {
+			try {
+				const users: ApiResponse = await this.usersService.usersAttendanceToday()
+				return res.status(users.stat_code).json(users)
+			} catch (e: any) {
+				return res.status(e.stat_code).json(e)
+			}
+		}
+	}
+
+	usersAttendanceTemp(): Handler {
+		return async (_req: Request, res: Response, _next: NextFunction): Promise<OutgoingMessage> => {
+			try {
+				const users: ApiResponse = await this.usersService.usersAttendanceTemp()
+				return res.status(users.stat_code).json(users)
+			} catch (e: any) {
+				return res.status(e.stat_code).json(e)
+			}
+		}
+	}
 }

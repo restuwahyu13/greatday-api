@@ -43,6 +43,8 @@ export class UsersRoute {
 			[this.authMiddleware.use, this.validatorMiddleware.use(UsersRecordAttendanceDTO)],
 			this.usersController.usersRecordAttendance()
 		)
+		this.router.get('/today-attendance', [this.authMiddleware.use], this.usersController.usersAttendanceToday())
+		this.router.get('/temp-attendance', [this.authMiddleware.use], this.usersController.usersAttendanceTemp())
 
 		return this.router
 	}

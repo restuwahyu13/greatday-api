@@ -150,4 +150,30 @@ export class UsersService {
 			throw apiResponse({ err_message: e })
 		}
 	}
+
+	async usersAttendanceToday(): Promise<ApiResponse> {
+		try {
+			const user: IUser = this.usersMetadata.user()
+			const req: Request = this.requestMetadata.req()
+
+			const attendance = await this.greatDayProvider.listAttendaceToday(this.axiosLibs, user, req)
+
+			return apiResponse({ stat_code: status.OK, stat_message: 'Success', data: attendance })
+		} catch (e: any) {
+			throw apiResponse({ err_message: e })
+		}
+	}
+
+	async usersAttendanceTemp(): Promise<ApiResponse> {
+		try {
+			const user: IUser = this.usersMetadata.user()
+			const req: Request = this.requestMetadata.req()
+
+			const attendances = await this.greatDayProvider.listAttendaceTemp(this.axiosLibs, user, req)
+
+			return apiResponse({ stat_code: status.OK, stat_message: 'Success', data: attendances })
+		} catch (e: any) {
+			throw apiResponse({ err_message: e })
+		}
+	}
 }

@@ -22,7 +22,6 @@
 		"noUnusedLocals": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"declaration": true,
 		"removeComments": true,
 		"strictNullChecks": false,
 		"noImplicitAny": false,
